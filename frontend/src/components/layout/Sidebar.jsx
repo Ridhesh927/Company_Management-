@@ -96,7 +96,7 @@ export function Sidebar({ isMobileOpen, setIsMobileOpen }) {
           <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center mr-3 shadow-md shadow-primary/20">
             <Building2 className="text-primary-foreground h-4 w-4" />
           </div>
-          <span className="font-bold text-lg tracking-tight">UpToSkills</span>
+          <span className="font-bold text-lg tracking-tight">Intern Management</span>
         </div>
 
         <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">

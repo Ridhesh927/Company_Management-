@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "UpToSkills | Intern Management",
+  title: "Intern Management",
   description: "Centralized intern management and workforce tracking system.",
 };
 

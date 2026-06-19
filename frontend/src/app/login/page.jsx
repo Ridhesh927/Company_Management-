@@ -14,6 +14,8 @@ export default function LoginPage() {
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("intern@example.com");
+  const [password, setPassword] = useState("password123");
 
   // For the prototype, we use quick login buttons
   const handleQuickLogin = (role) => {
@@ -45,8 +47,7 @@ export default function LoginPage() {
           <div className="h-12 w-12 bg-primary rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
             <Building2 className="text-primary-foreground h-6 w-6" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">UpToSkills</h1>
-          <p className="text-muted-foreground">Intern Management System</p>
+          <h1 className="text-2xl font-bold tracking-tight">Intern Management System</h1>
         </div>
 
         <Card className="border-border/50 shadow-xl shadow-black/5 backdrop-blur-sm bg-card/90">
@@ -58,7 +59,7 @@ export default function LoginPage() {
             <form onSubmit={handleStandardLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="m@example.com" required defaultValue="intern@uptoskills.com" />
+                <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -67,7 +68,7 @@ export default function LoginPage() {
                     Forgot password?
                   </a>
                 </div>
-                <Input id="password" type="password" required defaultValue="password123" />
+                <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Signing in..." : "Sign In"}

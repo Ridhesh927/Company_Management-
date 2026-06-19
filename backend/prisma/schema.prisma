@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
+  name         String
+  role         Role         @default(INTERN)
+  department   String
+  managerId    Int?         
+  manager      User?        @relation("UserToManager", fields: [managerId], references: [id])
+  subordinates User[]       @relation("UserToManager")
+  attendances  Attendance[]
+  ratingsGiven Rating[]     @relation("RaterToRating")
+  ratingsGot   Rating[]     @relation("UserToRating")
+  proofs       Proof[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Attendance {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime @db.Date
+  status    String   // Present, Absent, Late, Leave
+  markedBy  Int
+  remarks   String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+}
+
+model Task {
+  id             Int      @id @default(autoincrement())
+  title          String
+  description    String
+  targetAudience String   // All, MERN Stack, etc
+  deadline       DateTime
+  status         String   @default("Active")
+  proofs         Proof[]
+  createdAt      DateTime @default(now())
+}
+
+model Proof {
+  id        Int      @id @default(autoincrement())
+  taskId    Int
+  task      Task     @relation(fields: [taskId], references: [id])
+  internId  Int
+  intern    User     @relation(fields: [internId], references: [id])
+  status    String   @default("Pending") // Pending, Approved, Rejected
+  imageUrl  String?
+  timestamp DateTime @default(now())
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation("UserToRating", fields: [userId], references: [id])
+  raterId   Int
+  rater     User     @relation("RaterToRating", fields: [raterId], references: [id])
+  rating    Float
+  comments  String
+  month     String
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  SENIOR_TL
+  TL
+  CAPTAIN
+  INTERN
+}
