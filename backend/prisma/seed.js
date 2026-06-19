@@ -1,4 +1,7 @@
 const { PrismaClient } = require('@prisma/client')
+const bcrypt = require('bcryptjs')
+require('dotenv').config()
+
 const prisma = new PrismaClient()
 
 async function main() {
@@ -11,33 +14,41 @@ async function main() {
   await prisma.attendance.deleteMany()
   await prisma.user.deleteMany()
 
+  const adminPassword = process.env.ADMIN_PASSWORD || 'admin_password'
+  const seniorTlPassword = process.env.SENIORTL_PASSWORD || 'seniortl_password'
+  const seedPassword = process.env.SEED_PASSWORD || 'password123'
+
+  const adminHashed = await bcrypt.hash(adminPassword, 10)
+  const seniorTlHashed = await bcrypt.hash(seniorTlPassword, 10)
+  const hashedPassword = await bcrypt.hash(seedPassword, 10)
+
   // Create Admin
   const admin = await prisma.user.create({
-    data: { name: 'Admin User', email: 'admin@gmail.com', role: 'ADMIN', department: 'Global' }
+    data: { name: 'Admin User', email: 'admin@gmail.com', password: adminHashed, role: 'ADMIN', department: 'Global' }
   })
 
   // Create Senior TL
   const seniorTl = await prisma.user.create({
-    data: { name: 'Senior TL User', email: 'seniortl@gmail.com', role: 'SENIOR_TL', department: 'MERN Stack', managerId: admin.id }
+    data: { name: 'Senior TL User', email: 'seniortl@gmail.com', password: seniorTlHashed, role: 'SENIOR_TL', department: 'MERN Stack', managerId: admin.id }
   })
 
   // Create TL
   const tl = await prisma.user.create({
-    data: { name: 'Team Lead User', email: 'tl@gmail.com', role: 'TL', department: 'MERN Stack', managerId: seniorTl.id }
+    data: { name: 'Team Lead User', email: 'tl@gmail.com', password: hashedPassword, role: 'TL', department: 'MERN Stack', managerId: seniorTl.id }
   })
 
   // Create Captain
   const captain = await prisma.user.create({
-    data: { name: 'Captain User', email: 'captain@gmail.com', role: 'CAPTAIN', department: 'MERN Stack', managerId: tl.id }
+    data: { name: 'Captain User', email: 'captain@gmail.com', password: hashedPassword, role: 'CAPTAIN', department: 'MERN Stack', managerId: tl.id }
   })
 
   // Create Interns
   const intern1 = await prisma.user.create({
-    data: { name: 'Intern User', email: 'intern@gmail.com', role: 'INTERN', department: 'MERN Stack', managerId: captain.id }
+    data: { name: 'Intern User', email: 'intern@gmail.com', password: hashedPassword, role: 'INTERN', department: 'MERN Stack', managerId: captain.id }
   })
   
   const intern2 = await prisma.user.create({
-    data: { name: 'Intern User 2', email: 'intern2@gmail.com', role: 'INTERN', department: 'MERN Stack', managerId: captain.id }
+    data: { name: 'Intern User 2', email: 'intern2@gmail.com', password: hashedPassword, role: 'INTERN', department: 'MERN Stack', managerId: captain.id }
   })
 
   // Create Tasks

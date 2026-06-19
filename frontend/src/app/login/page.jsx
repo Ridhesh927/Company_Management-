@@ -8,27 +8,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, ArrowRight } from "lucide-react";
+import { Building2, ArrowRight, Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("intern@example.com");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  // For the prototype, we use quick login buttons
-  const handleQuickLogin = (role) => {
-    setIsLoading(true);
-    setTimeout(() => {
-      login(role);
-      router.push("/dashboard");
-    }, 600);
-  };
-
-  const handleStandardLogin = (e) => {
+  const handleStandardLogin = async (e) => {
     e.preventDefault();
-    handleQuickLogin("intern"); // Default to intern for standard login demo
+    setIsLoading(true);
+    const success = await login(email, password);
+    if (success) {
+      router.push("/dashboard");
+    } else {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -68,40 +66,35 @@ export default function LoginPage() {
                     Forgot password?
                   </a>
                 </div>
-                <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                <div className="relative">
+                  <Input 
+                    id="password" 
+                    type={showPassword ? "text" : "password"} 
+                    required 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
+              {useAuthStore.getState().error && (
+                <p className="text-sm text-destructive text-center mt-2">
+                  {useAuthStore.getState().error}
+                </p>
+              )}
             </form>
           </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <div className="relative w-full">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or quick login as (Prototype)</span>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 w-full">
-              <Button variant="outline" size="sm" onClick={() => handleQuickLogin("admin")} disabled={isLoading}>
-                Admin
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => handleQuickLogin("seniortl")} disabled={isLoading}>
-                Senior TL
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => handleQuickLogin("tl")} disabled={isLoading}>
-                Team Lead
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => handleQuickLogin("captain")} disabled={isLoading}>
-                Captain
-              </Button>
-              <Button variant="outline" size="sm" className="col-span-2" onClick={() => handleQuickLogin("intern")} disabled={isLoading}>
-                Intern
-              </Button>
-            </div>
-          </CardFooter>
         </Card>
       </motion.div>
     </div>

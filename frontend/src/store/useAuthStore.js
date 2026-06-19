@@ -1,25 +1,33 @@
 import { create } from 'zustand';
-
-// Mock users for different roles
-const MOCK_USERS = {
-  admin: { id: 1, name: 'Admin User', email: 'admin@example.com', role: 'ADMIN', department: 'Global' },
-  seniortl: { id: 2, name: 'Senior TL User', email: 'seniortl@example.com', role: 'SENIOR_TL', department: 'MERN Stack' },
-  tl: { id: 3, name: 'Team Lead User', email: 'tl@example.com', role: 'TL', department: 'MERN Stack' },
-  captain: { id: 4, name: 'Captain User', email: 'captain@example.com', role: 'CAPTAIN', department: 'MERN Stack' },
-  intern: { id: 5, name: 'Intern User', email: 'intern@example.com', role: 'INTERN', department: 'MERN Stack' },
-};
+import { fetchApi } from '../services/api';
 
 export const useAuthStore = create((set) => ({
   user: null,
   isAuthenticated: false,
+  error: null,
   
-  // Simulated login function
-  login: (roleKey) => {
-    const user = MOCK_USERS[roleKey];
-    if (user) {
-      set({ user, isAuthenticated: true });
+  // Real login function using API
+  login: async (email, password) => {
+    try {
+      set({ error: null });
+      const data = await fetchApi('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
+      
+      if (data.success) {
+        localStorage.setItem('jwt_token', data.token);
+        set({ user: data.user, isAuthenticated: true });
+        return true;
+      }
+    } catch (err) {
+      set({ error: err.message });
+      return false;
     }
   },
   
-  logout: () => set({ user: null, isAuthenticated: false }),
+  logout: () => {
+    localStorage.removeItem('jwt_token');
+    set({ user: null, isAuthenticated: false, error: null });
+  },
 }));

@@ -2,17 +2,25 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
 
 export const fetchApi = async (endpoint, options = {}) => {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('jwt_token') : null;
+  
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
+    headers,
   });
   
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'API request failed');
+    throw new Error(error.error || error.message || 'API request failed');
   }
   
   return response.json();
