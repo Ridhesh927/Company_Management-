@@ -4,6 +4,10 @@ const prismaPlugin = require('./plugins/prisma')
 const jwtPlugin = require('./plugins/jwt')
 const authRoutes = require('./routes/auth.routes')
 const userRoutes = require('./routes/user.routes')
+const attendanceRoutes = require('./routes/attendance.routes')
+const ratingRoutes = require('./routes/rating.routes')
+const taskRoutes = require('./routes/task.routes')
+const leaveRoutes = require('./routes/leave.routes')
 
 fastify.register(cors, { 
   origin: '*'
@@ -14,5 +18,9 @@ fastify.register(jwtPlugin)
 
 fastify.register(authRoutes, { prefix: '/api/v1/auth' })
 fastify.register(userRoutes, { prefix: '/api/v1/users' })
+fastify.register(attendanceRoutes, { prefix: '/api/v1/attendances' })
+fastify.register(ratingRoutes, { prefix: '/api/v1/ratings' })
+fastify.register(taskRoutes, { prefix: '/api/v1/tasks' })
+fastify.register(leaveRoutes, { prefix: '/api/v1/leaves' })
 
 module.exports = fastify

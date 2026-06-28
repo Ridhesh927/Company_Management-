@@ -21,6 +21,7 @@ model User {
   ratingsGiven Rating[]     @relation("RaterToRating")
   ratingsGot   Rating[]     @relation("UserToRating")
   proofs       Proof[]
+  leaveRequests LeaveRequest[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 }
@@ -78,4 +79,21 @@ enum Role {
   TL
   CAPTAIN
   INTERN
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model LeaveRequest {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id])
+  startDate DateTime    @db.Date
+  endDate   DateTime    @db.Date
+  reason    String
+  status    LeaveStatus @default(PENDING)
+  createdAt DateTime    @default(now())
 }
