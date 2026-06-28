@@ -8,6 +8,7 @@ const attendanceRoutes = require('./routes/attendance.routes')
 const ratingRoutes = require('./routes/rating.routes')
 const taskRoutes = require('./routes/task.routes')
 const leaveRoutes = require('./routes/leave.routes')
+const analyticsRoutes = require('./routes/analytics.routes')
 
 fastify.register(cors, { 
   origin: '*'
@@ -22,5 +23,6 @@ fastify.register(attendanceRoutes, { prefix: '/api/v1/attendances' })
 fastify.register(ratingRoutes, { prefix: '/api/v1/ratings' })
 fastify.register(taskRoutes, { prefix: '/api/v1/tasks' })
 fastify.register(leaveRoutes, { prefix: '/api/v1/leaves' })
+fastify.register(analyticsRoutes, { prefix: '/api/v1/analytics' })
 
 module.exports = fastify
