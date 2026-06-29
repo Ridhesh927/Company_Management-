@@ -4,6 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Clock, Upload, Star } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+
+const personalAnalytics = [
+  { name: 'Jan', rating: 4.2, tasks: 5 },
+  { name: 'Feb', rating: 4.4, tasks: 7 },
+  { name: 'Mar', rating: 4.5, tasks: 8 },
+  { name: 'Apr', rating: 4.7, tasks: 6 },
+  { name: 'May', rating: 4.8, tasks: 9 },
+  { name: 'Jun', rating: 4.9, tasks: 12 },
+];
 
 export function InternDashboard() {
   const tasks = [
@@ -127,6 +137,30 @@ export function InternDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>My Performance Trends</CardTitle>
+          <CardDescription>Monthly ratings and task completions</CardDescription>
+        </CardHeader>
+        <CardContent className="pt-4 h-[350px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={personalAnalytics} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} dy={10} />
+              <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+              <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+              <Tooltip 
+                contentStyle={{ backgroundColor: "hsl(var(--card))", borderColor: "hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }}
+                itemStyle={{ color: "hsl(var(--foreground))" }}
+              />
+              <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
+              <Line yAxisId="left" type="monotone" dataKey="rating" name="Rating (out of 5)" stroke="hsl(var(--amber-500, 38 92% 50%))" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+              <Line yAxisId="right" type="monotone" dataKey="tasks" name="Tasks Completed" stroke="hsl(var(--primary))" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
     </div>
   );
 }

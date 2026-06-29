@@ -4,6 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, FileCheck, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+
+const analyticsData = [
+  { name: 'Jan', completions: 85, attendance: 90 },
+  { name: 'Feb', completions: 88, attendance: 92 },
+  { name: 'Mar', completions: 92, attendance: 95 },
+  { name: 'Apr', completions: 90, attendance: 93 },
+  { name: 'May', completions: 95, attendance: 96 },
+  { name: 'Jun', completions: 98, attendance: 98 },
+];
 
 export function ManagerDashboard({ role }) {
   const roleName = role === "SENIOR_TL" ? "Department" : role === "TL" ? "Team" : "Interns";
@@ -99,6 +109,30 @@ export function ManagerDashboard({ role }) {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Team Analytics & Performance</CardTitle>
+          <CardDescription>Monthly task completions and attendance average (%)</CardDescription>
+        </CardHeader>
+        <CardContent className="pt-4 h-[350px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={analyticsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} dy={10} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+              <Tooltip 
+                cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
+                contentStyle={{ backgroundColor: "hsl(var(--card))", borderColor: "hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }}
+                itemStyle={{ color: "hsl(var(--foreground))" }}
+              />
+              <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
+              <Bar dataKey="completions" name="Task Completions" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="attendance" name="Attendance Rate" fill="hsl(var(--chart-2, 190 90% 40%))" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
     </div>
   );
 }
