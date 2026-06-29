@@ -7,6 +7,11 @@ async function taskRoutes(fastify, options) {
     { preValidation: [fastify.authenticate, requireRole(['INTERN'])] },
     taskController.fillTaskSheet
   )
+  fastify.put(
+    '/proofs/:id/approve',
+    { preValidation: [fastify.authenticate, requireRole(['ADMIN', 'SENIOR_TL', 'TL', 'CAPTAIN'])] },
+    taskController.approveProof
+  )
 }
 
 module.exports = taskRoutes

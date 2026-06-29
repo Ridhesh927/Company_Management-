@@ -97,4 +97,19 @@ const promoteUser = async (request, reply) => {
   return { success: true, user: updatedUser }
 }
 
-module.exports = { getDashboardData, createIntern, promoteUser }
+const getLeaderboard = async (request, reply) => {
+  const topUsers = await request.server.prisma.user.findMany({
+    orderBy: { points: 'desc' },
+    take: 10,
+    select: {
+      id: true,
+      name: true,
+      department: true,
+      role: true,
+      points: true
+    }
+  })
+  return { success: true, leaderboard: topUsers }
+}
+
+module.exports = { getDashboardData, createIntern, promoteUser, getLeaderboard }

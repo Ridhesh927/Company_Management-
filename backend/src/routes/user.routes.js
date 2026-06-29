@@ -2,6 +2,7 @@ const userController = require('../controllers/user.controller')
 const { requireRole, requireHierarchy } = require('../plugins/auth.middleware')
 
 async function userRoutes(fastify, options) {
+  fastify.get('/leaderboard', { preValidation: [fastify.authenticate] }, userController.getLeaderboard)
   fastify.get('/:id/dashboard', { preValidation: [fastify.authenticate] }, userController.getDashboardData)
 
   fastify.post(

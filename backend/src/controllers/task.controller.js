@@ -14,4 +14,23 @@ const fillTaskSheet = async (request, reply) => {
   return { success: true, proof }
 }
 
-module.exports = { fillTaskSheet }
+const approveProof = async (request, reply) => {
+  const { id } = request.params
+  const proofId = parseInt(id)
+  
+  // Update proof status and award points (e.g. 10 points per task)
+  const proof = await request.server.prisma.proof.update({
+    where: { id: proofId },
+    data: { status: 'Approved' }
+  })
+  
+  // Award points to the intern
+  await request.server.prisma.user.update({
+    where: { id: proof.internId },
+    data: { points: { increment: 10 } }
+  })
+  
+  return { success: true, proof }
+}
+
+module.exports = { fillTaskSheet, approveProof }
